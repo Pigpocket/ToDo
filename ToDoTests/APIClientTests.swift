@@ -34,7 +34,7 @@ class APIClientTests: XCTestCase {
         guard let url = mockURLSession.url else { XCTFail(); return }
         let urlComponents = URLComponents(url: url,
                                           resolvingAgainstBaseURL: true)
-        XCTAssertEqual(urlComponents?.host, "awesometodos.com")
+        XCTAssertEqual(mockURLSession.urlComponents?.host, "awesometodos.com")
     }
     
     func test_Login_UsesExpectedPath() {
@@ -47,7 +47,7 @@ class APIClientTests: XCTestCase {
         }
         let urlComponents = URLComponents(url: url,
                                           resolvingAgainstBaseURL: true)
-        XCTAssertEqual(urlComponents?.path, "/login")
+        XCTAssertEqual(mockURLSession.urlComponents?.path, "/login")
     }
     
 }
@@ -56,6 +56,11 @@ extension APIClientTests {
     
     class MockURLSession: SessionProtocol {
         var url: URL?
+        var urlComponents: URLComponents?  {
+            guard let url = url else { return nil }
+            return URLComponents(url: url,
+                                 resolvingAgainstBaseURL: true)
+        }
         func dataTask(
             with url: URL,
             completionHandler: @escaping
