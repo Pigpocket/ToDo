@@ -11,9 +11,14 @@ import XCTest
 
 class APIClientTests: XCTestCase {
     
+    var sut: APIClient!
+    var mockURLSession: MockURLSession!
+    
     override func setUp() {
         super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        sut = APIClient()
+        mockURLSession = MockURLSession()
+        sut.session = mockURLSession
     }
     
     override func tearDown() {
@@ -22,9 +27,27 @@ class APIClientTests: XCTestCase {
     }
     
     func test_Login_UsesExpectedHost() {
-        let sut = APIClient()
-        let mockURLSession = MockURLSession()
-        sut.session = mockURLSession
+        let completion = { (token: Token?, error: Error?) in }
+        sut.loginUser(withName:"dasdom",
+                      password: "1234",
+                      completion: completion)
+        guard let url = mockURLSession.url else { XCTFail(); return }
+        let urlComponents = URLComponents(url: url,
+                                          resolvingAgainstBaseURL: true)
+        XCTAssertEqual(urlComponents?.host, "awesometodos.com")
+    }
+    
+    func test_Login_UsesExpectedPath() {
+        let completion = { (token: Token?, error: Error?) in }
+        sut.loginUser(withName:"dasdom",
+                      password: "1234",
+                      completion: completion)
+        guard let url = URL(string: "https://awesometodos.com/login") else {
+            fatalError()
+        }
+        let urlComponents = URLComponents(url: url,
+                                          resolvingAgainstBaseURL: true)
+        XCTAssertEqual(urlComponents?.path, "/login")
     }
     
 }
