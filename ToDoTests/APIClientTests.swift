@@ -71,6 +71,23 @@ extension APIClientTests {
                 return URLSession.shared.dataTask(with: url)
         }
     }
+    
+    class MockTask: URLSessionDataTask {
+        private let data: Data?
+        private let urlResponse: URLResponse?
+        private let responseError: Error?
+        typealias CompletionHandler = (Data?, URLResponse?, Error?)
+            -> Void
+        var completionHandler: CompletionHandler?
+        init(data: Data?, urlResponse: URLResponse?, error: Error?) {
+            self.data = data
+            self.urlResponse = urlResponse
+            self.responseError = error
+        }
+        override func resume() {
+            DispatchQueue.main.async() {
+                self.completionHandler?(self.data, self.urlResponse, self.responseError)
+            }
+        }
+    }
 }
-
-
