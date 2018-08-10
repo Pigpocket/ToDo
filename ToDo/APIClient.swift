@@ -14,7 +14,16 @@ class APIClient {
     func loginUser(withName username: String,
                    password: String,
                    completion: @escaping (Token , Error ) -> Void) {
-        guard let url = URL(string: "https://awesometodos.com") else { fatalError() }
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = "awesometodos.com"
+        components.path = "/login"
+        let queryUsername = URLQueryItem(name: "username", value: username)
+        let queryPassword = URLQueryItem(name: "password", value: password)
+        components.queryItems = [queryUsername, queryPassword]
+        guard let url = components.url else {
+                fatalError()
+        }
         session.dataTask(with: url) { (data, response, error) in
         }
     }
@@ -30,3 +39,5 @@ protocol SessionProtocol {
 }
 
 extension URLSession: SessionProtocol {}
+
+

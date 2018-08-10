@@ -31,9 +31,6 @@ class APIClientTests: XCTestCase {
         sut.loginUser(withName:"dasdom",
                       password: "1234",
                       completion: completion)
-        guard let url = mockURLSession.url else { XCTFail(); return }
-        let urlComponents = URLComponents(url: url,
-                                          resolvingAgainstBaseURL: true)
         XCTAssertEqual(mockURLSession.urlComponents?.host, "awesometodos.com")
     }
     
@@ -42,12 +39,16 @@ class APIClientTests: XCTestCase {
         sut.loginUser(withName:"dasdom",
                       password: "1234",
                       completion: completion)
-        guard let url = URL(string: "https://awesometodos.com/login") else {
-            fatalError()
-        }
-        let urlComponents = URLComponents(url: url,
-                                          resolvingAgainstBaseURL: true)
         XCTAssertEqual(mockURLSession.urlComponents?.path, "/login")
+    }
+    
+    func test_Login_UsesExpectedQuery() {
+        let completion = { (token: Token?, error: Error?) in }
+        sut.loginUser(withName:"dasdöm",
+                      password: "%&34",
+                      completion: completion)
+        XCTAssertEqual(mockURLSession.urlComponents?.percentEncodedQuery,
+            "username=dasd%C3%B6m&password=%25%2634")
     }
     
 }
