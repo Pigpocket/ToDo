@@ -9,5 +9,5 @@
 import UIKit
 
 struct Token {
-
+    let id: String
 }

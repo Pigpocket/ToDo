@@ -13,7 +13,7 @@ class APIClient {
     
     func loginUser(withName username: String,
                    password: String,
-                   completion: @escaping (Token , Error ) -> Void) {
+                   completion: @escaping (Token?, Error?) -> Void) {
         var components = URLComponents()
         components.scheme = "https"
         components.host = "awesometodos.com"
@@ -25,7 +25,18 @@ class APIClient {
                 fatalError()
         }
         session.dataTask(with: url) { (data, response, error) in
-        }
+            guard let data = data else { return }
+            let dict = try! JSONSerialization.jsonObject(
+                with: data,
+                options: []) as? [String:String]
+            let token: Token?
+            if let tokenString = dict?["token"] {
+                token = Token(id: tokenString)
+            } else {
+                token = nil
+            }
+            completion(token, nil)
+        }.resume()
     }
     
 }

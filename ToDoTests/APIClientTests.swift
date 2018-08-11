@@ -17,7 +17,7 @@ class APIClientTests: XCTestCase {
     override func setUp() {
         super.setUp()
         sut = APIClient()
-        mockURLSession = MockURLSession()
+        mockURLSession = MockURLSession(data: nil, urlResponse: nil, error: nil)
         sut.session = mockURLSession
     }
     
@@ -51,16 +51,40 @@ class APIClientTests: XCTestCase {
             "username=dasd%C3%B6m&password=%25%2634")
     }
     
+    func test_Login_WhenSuccessful_CreatesToken() {
+        let jsonData =
+            "{\"token\": \"1234567890\"}"
+                .data(using: .utf8)
+        mockURLSession = MockURLSession(data: jsonData,
+                                        urlResponse: nil,
+                                        error: nil)
+        sut.session = mockURLSession
+        let tokenExpectation = expectation(description: "Token")
+        var caughtToken: Token? = nil
+        sut.loginUser(withName: "Foo", password: "Bar") { token, _
+            in
+            caughtToken = token
+            tokenExpectation.fulfill()
+        }
+        waitForExpectations(timeout: 1) { _ in
+            XCTAssertEqual(caughtToken?.id, "1234567890")
+        }
+    }
+    
 }
 
 extension APIClientTests {
     
     class MockURLSession: SessionProtocol {
         var url: URL?
+        private let dataTask: MockTask
         var urlComponents: URLComponents?  {
             guard let url = url else { return nil }
             return URLComponents(url: url,
                                  resolvingAgainstBaseURL: true)
+        }
+        init(data: Data?, urlResponse: URLResponse?, error: Error?) {
+            dataTask = MockTask(data: data, urlResponse: urlResponse, error: error)
         }
         func dataTask(
             with url: URL,
@@ -68,7 +92,8 @@ extension APIClientTests {
             (Data?, URLResponse?, Error?) -> Void)
             -> URLSessionDataTask {
                 self.url = url
-                return URLSession.shared.dataTask(with: url)
+                dataTask.completionHandler = completionHandler
+                return dataTask
         }
     }
     
