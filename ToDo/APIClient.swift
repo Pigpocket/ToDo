@@ -26,7 +26,7 @@ class APIClient {
         }
         session.dataTask(with: url) { (data, response, error) in
             guard let data = data else { return }
-            let dict = try! JSONSerialization.jsonObject(
+            do { let dict = try JSONSerialization.jsonObject(
                 with: data,
                 options: []) as? [String:String]
             let token: Token?
@@ -36,9 +36,11 @@ class APIClient {
                 token = nil
             }
             completion(token, nil)
+            } catch {
+            completion(nil, error)
+            }
         }.resume()
     }
-    
 }
 
 protocol SessionProtocol {
