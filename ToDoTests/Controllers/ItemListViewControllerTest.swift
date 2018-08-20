@@ -56,13 +56,7 @@ class ItemListViewControllerTest: XCTestCase {
     
     func test_AddItem_PresentsAddItemViewController() {
         XCTAssertNil(sut.presentedViewController)
-        guard let addButton = sut.navigationItem.rightBarButtonItem else
-        { XCTFail(); return }
-        guard let action = addButton.action else { XCTFail(); return }
-        UIApplication.shared.keyWindow?.rootViewController = sut
-        sut.performSelector(onMainThread: action,
-                            with: addButton,
-                            waitUntilDone: true)
+        applyAddButton()
         XCTAssertNotNil(sut.presentedViewController)
         XCTAssertTrue(sut.presentedViewController is InputViewController)
         let inputViewController =
@@ -70,4 +64,23 @@ class ItemListViewControllerTest: XCTestCase {
         XCTAssertNotNil(inputViewController.titleTextField)
     }
 
+    func testItemListVC_SharesItemManagerWithInputVC() {
+        applyAddButton()
+        guard let inputViewController =
+            sut.presentedViewController as? InputViewController else
+        { XCTFail(); return }
+        guard let inputItemManager = inputViewController.itemManager else
+        { XCTFail(); return }
+        XCTAssertTrue(sut.itemManager === inputItemManager)
+    }
+    
+    func applyAddButton() {
+        guard let addButton = sut.navigationItem.rightBarButtonItem else
+        { XCTFail(); return }
+        guard let action = addButton.action else { XCTFail(); return }
+        UIApplication.shared.keyWindow?.rootViewController = sut
+        sut.performSelector(onMainThread: action,
+                            with: addButton,
+                            waitUntilDone: true)
+    }
 }

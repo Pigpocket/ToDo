@@ -10,6 +10,8 @@ import UIKit
 
 class ItemListViewController: UIViewController {
 
+    let itemManager = ItemManager()
+    
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet var dataProvider: (UITableViewDataSource & UITableViewDelegate)!
     
@@ -24,6 +26,7 @@ class ItemListViewController: UIViewController {
             storyboard?.instantiateViewController(
                 withIdentifier: "InputViewController")
                 as? InputViewController {
+            nextViewController.itemManager = itemManager
             present(nextViewController, animated: true, completion: nil)
         }
     }
