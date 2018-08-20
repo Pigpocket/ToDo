@@ -20,5 +20,11 @@ class ItemListViewController: UIViewController {
     }
     
     @IBAction func addItem(_ sender: Any) {
+        if let nextViewController =
+            storyboard?.instantiateViewController(
+                withIdentifier: "InputViewController")
+                as? InputViewController {
+            present(nextViewController, animated: true, completion: nil)
+        }
     }
 }
