@@ -18,4 +18,7 @@ class ItemListViewController: UIViewController {
         tableView.dataSource = dataProvider
         tableView.delegate = dataProvider
     }
+    
+    @IBAction func addItem(_ sender: Any) {
+    }
 }
