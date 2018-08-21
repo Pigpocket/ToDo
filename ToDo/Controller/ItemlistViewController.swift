@@ -22,6 +22,11 @@ class ItemListViewController: UIViewController {
         dataProvider.itemManager = itemManager
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        tableView.reloadData()
+    }
+    
     @IBAction func addItem(_ sender: Any) {
         if let nextViewController =
             storyboard?.instantiateViewController(

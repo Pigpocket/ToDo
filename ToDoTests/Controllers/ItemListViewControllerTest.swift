@@ -78,6 +78,14 @@ class ItemListViewControllerTest: XCTestCase {
         XCTAssertTrue(sut.itemManager === sut.dataProvider.itemManager)
     }
     
+    func test_TableView_IsReloadedWhenItemIsAdded() {
+        let mockTableView = MockTableView()
+        mockTableView.reloadData()
+        sut.beginAppearanceTransition(true, animated: true)
+        sut.endAppearanceTransition()
+        XCTAssertTrue(mockTableView.reloadDataGotCalled)
+    }
+    
     func applyAddButton() {
         guard let addButton = sut.navigationItem.rightBarButtonItem else
         { XCTFail(); return }
@@ -86,5 +94,14 @@ class ItemListViewControllerTest: XCTestCase {
         sut.performSelector(onMainThread: action,
                             with: addButton,
                             waitUntilDone: true)
+    }
+}
+
+extension ItemListViewControllerTest {
+    class MockTableView: UITableView {
+        var reloadDataGotCalled = false
+        override func reloadData() {
+            reloadDataGotCalled = true
+        }
     }
 }
