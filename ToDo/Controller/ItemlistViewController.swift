@@ -13,12 +13,13 @@ class ItemListViewController: UIViewController {
     let itemManager = ItemManager()
     
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet var dataProvider: (UITableViewDataSource & UITableViewDelegate)!
+    @IBOutlet var dataProvider: (UITableViewDataSource & UITableViewDelegate & ItemManagerSettable)!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.dataSource = dataProvider
         tableView.delegate = dataProvider
+        dataProvider.itemManager = itemManager
     }
     
     @IBAction func addItem(_ sender: Any) {
