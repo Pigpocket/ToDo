@@ -39,4 +39,8 @@ struct ToDoItem: Equatable {
         self.timestamp = timestamp
         self.location = location
     }
+    
+    var plistDict: [String:Any] {
+        return [:]
+    }
 }

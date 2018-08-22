@@ -87,4 +87,11 @@ class ToDoItemTests: XCTestCase {
         let second = ToDoItem(title: "Bar")
         XCTAssertNotEqual(first, second)
     }
+    
+    func test_HasPlistDictionaryProperty() {
+        let item = ToDoItem(title: "First")
+        let dictionary = item.plistDict
+        XCTAssertNotNil(dictionary)
+        XCTAssertTrue(dictionary is [String:Any])
+    }
 }

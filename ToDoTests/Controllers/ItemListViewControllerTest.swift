@@ -95,6 +95,33 @@ class ItemListViewControllerTest: XCTestCase {
                             with: addButton,
                             waitUntilDone: true)
     }
+    
+    func testItemSelectedNotification_PushesDetailVC() {
+        let mockNavigationController =
+            MockNavigationController(rootViewController: sut)
+        UIApplication.shared.keyWindow?.rootViewController =
+        mockNavigationController
+        sut.loadViewIfNeeded()
+        sut.itemManager.add(ToDoItem(title: "foo"))
+        sut.itemManager.add(ToDoItem(title: "bar"))
+        NotificationCenter.default.post(
+            name: NSNotification.Name("ItemSelectedNotification"),
+            object: self,
+            userInfo: ["index": 1])
+        guard let detailViewController = mockNavigationController
+            .lastPushedViewController as? DetailViewController else {
+                return XCTFail()
+        }
+        guard let detailItemManager = detailViewController.itemInfo?.0 else
+        { return XCTFail() }
+        guard let index = detailViewController.itemInfo?.1 else
+        { return XCTFail() }
+        detailViewController.loadViewIfNeeded()
+        XCTAssertNotNil(detailViewController.titleLabel)
+        XCTAssertTrue(detailItemManager === sut.itemManager)
+        XCTAssertEqual(index, 1)
+    }
+    
 }
 
 extension ItemListViewControllerTest {
@@ -102,6 +129,16 @@ extension ItemListViewControllerTest {
         var reloadDataGotCalled = false
         override func reloadData() {
             reloadDataGotCalled = true
+        }
+    }
+}
+
+extension ItemListViewControllerTest {
+    class MockNavigationController : UINavigationController {
+        var lastPushedViewController: UIViewController?
+        override func pushViewController(_ viewController: UIViewController, animated: Bool) {
+            lastPushedViewController = viewController
+            super.pushViewController(viewController, animated: animated)
         }
     }
 }
