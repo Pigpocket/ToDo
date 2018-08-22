@@ -94,4 +94,15 @@ class ToDoItemTests: XCTestCase {
         XCTAssertNotNil(dictionary)
         XCTAssertTrue(dictionary is [String:Any])
     }
+    
+    func xtest_CanBeCreatedFromPlistDictionary() {
+        let location = Location(name: "Bar")
+        let item = ToDoItem(title: "Foo",
+                            itemDescription: "Baz",
+                            timestamp: 1.0,
+                            location: location)
+        let dict = item.plistDict
+        let recreatedItem = ToDoItem(dict: dict)
+        XCTAssertEqual(item, recreatedItem)
+    }
 }

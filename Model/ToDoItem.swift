@@ -40,7 +40,12 @@ struct ToDoItem: Equatable {
         self.location = location
     }
     
+    init?(dict: [String:Any]) {
+        return nil
+    }
+    
     var plistDict: [String:Any] {
         return [:]
     }
+
 }
