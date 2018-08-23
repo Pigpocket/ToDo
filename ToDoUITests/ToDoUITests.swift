@@ -29,8 +29,37 @@ class ToDoUITests: XCTestCase {
     }
     
     func testExample() {
-        // Use recording to get started writing UI tests.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        
+        let app = XCUIApplication()
+        app.navigationBars["ToDo.ItemListView"].buttons["Add"].tap()
+        
+        let titleTextField = app.textFields["Title"]
+        titleTextField.tap()
+        titleTextField.typeText("Finish ToDo App")
+        
+        let dateTextField = app.textFields["Date"]
+        dateTextField.tap()
+        dateTextField.tap()
+        dateTextField.typeText("08/23/2018")
+        
+        let locationTextField = app.textFields["Location"]
+        locationTextField.tap()
+        locationTextField.tap()
+        locationTextField.typeText("Home")
+        
+        let addressTextField = app.textFields["Address"]
+        addressTextField.tap()
+        addressTextField.tap()
+        addressTextField.typeText("72667 Raven Rd. #4, Palm Desert, CA, 92260")
+        
+        let descriptionTextField = app.textFields["Description"]
+        descriptionTextField.tap()
+        descriptionTextField.typeText("Finally finish this tutorial!")
+        app.buttons["Save"].tap()
+        
+        XCTAssertTrue(app.tables.staticTexts["Finish ToDo App"].exists)
+        XCTAssertTrue(app.tables.staticTexts["08/23/2018"].exists)
+        XCTAssertTrue(app.tables.staticTexts["Home"].exists)
     }
     
 }
