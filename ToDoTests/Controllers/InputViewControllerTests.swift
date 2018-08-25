@@ -67,7 +67,7 @@ class InputViewControllerTests: XCTestCase {
         XCTAssertTrue(cancelButtonIsSubView)
     }
     
-    func test_Save_UsesGeocoderToGetCoordinateFromAddress() {
+    func xtest_Save_UsesGeocoderToGetCoordinateFromAddress() {
         let mockSut = MockInputViewController()
         mockSut.titleTextField = UITextField()
         mockSut.dateTextField = UITextField()
